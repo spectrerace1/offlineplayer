@@ -1,0 +1,96 @@
+.home-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    /* Örnek bir maksimum genişlik */
+
+}
+
+.home-logo {
+    flex: 1;
+    /* Logo genişlemesi */
+    text-align: center;
+    /* Metni yatayda ortala */
+    background-color: #f0f0f0;
+    /* Arka plan rengi */
+    height: 100vh;
+    border-radius: 5px;
+    /* Kenar yuvarlaklığı */
+    display: flex;
+    /* İçerikleri yatayda hizalamak için */
+    justify-content: center;
+    /* İçerikleri yatayda ortalamak için */
+    align-items: center;
+    /* İçerikleri dikeyde ortalamak için */
+    width: 50%;
+}
+
+.home-login {
+    flex: 1;
+    /* Giriş bölümü genişlemesi */
+    text-align: center;
+    /* Metni yatayda ortala */
+    background-color: #f0f0f0;
+    /* Arka plan rengi */
+    height: 100%;
+    border-radius: 5px;
+    /* Kenar yuvarlaklığı */
+
+}
+
+.home-logo img {
+   background-size:contain;
+   height: 100vh;
+  }
+
+  
+  .home-login {
+    flex: 1; /* Login bölümü genişlemesi */
+    background-color: #f0f0f0; /* Arka plan rengi */
+    padding: 20px; /* İçeriğin etrafındaki dolgu */
+    border-radius: 5px; /* Kenar yuvarlaklığı */
+  }
+  
+  .home-login > div {
+    margin-bottom: 10px; /* İçerikler arası boşluk */
+  }
+  
+  .home-login img {
+    display: block; /* Resmi blok öğe yapar */
+    margin: 0 auto 10px; /* Resmi ortalar ve altında boşluk bırakır */
+  }
+  
+  .home-login label {
+    display: block; /* Etiketi blok öğe yapar */
+    margin-bottom: 5px; /* Etiketler arası boşluk */
+  }
+  
+  .home-login input {
+    width: 100%; /* Giriş kutularını genişletir */
+    padding: 8px; /* İçeriği yastıklar */
+    border-radius: 5px; /* Kenar yuvarlaklığı */
+    border: 1px solid #ccc; /* Kenarlık stilini belirler */
+  }
+  
+  .home-login button {
+  
+    padding: 8px; /* İçeriği yastıklar */
+    border-radius: 5px; /* Kenar yuvarlaklığı */
+    border: none; /* Kenarlık olmadan */
+    background-color: #007bff; /* Arkaplan rengi */
+    color: #fff; /* Yazı rengi */
+    cursor: pointer; /* İmleci el işaretine dönüştürür */
+    transition: background-color 0.3s; /* Arka plan rengi geçiş efekti */
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+  }
+  
+  .home-login button:hover {
+    background-color: #0056b3; /* Hover durumunda arka plan rengini değiştirir */
+  }
+  

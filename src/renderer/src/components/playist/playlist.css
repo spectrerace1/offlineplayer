@@ -1,0 +1,88 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+   
+   
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+body::-webkit-scrollbar {/*  */
+    display: none;
+}
+
+.navbar {
+    background-color: #333;
+    text-align: center;
+}
+
+.navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.navbar-logo img {
+    width: 80px; /* İsteğe bağlı olarak boyutu ayarlayabilirsiniz */
+    height: 80px; /* İsteğe bağlı olarak boyutu ayarlayabilirsiniz */
+    vertical-align: middle;
+    border-radius: 50%;
+}
+
+.navbar-logo span {
+    margin-left: 15px;
+    font-size: 25px;
+    color: white;
+    font-weight: bold;
+    vertical-align: middle;
+}
+.navbar-info span {
+    margin-left: 15px;
+    font-size: 25px;
+    color: white;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.navbar-links a {
+    font-size: 25px;
+    color: white;
+    text-decoration: none;
+    display: inline-block; /* Dikey ortalamayı sağlamak için ekledik */
+    vertical-align: middle; /* Dikey ortalamayı sağlamak için ekledik */
+}
+
+.navbar-links a:hover {
+   color:#67b343
+}
+.playlist-container {
+    display: flex;
+    flex-direction: row; /* Yatayda sıralamak için */
+    align-items: center; /* Yatayda ortalamak için */
+    padding: 20px;
+    max-width: calc(100vw - 40px); /* Ekran genişliğinden kenar boşluklarını çıkartarak maksimum genişlik */
+     /* Yatay taşma durumunda kaydırma çubuğu ekle */
+    justify-content: flex-start; /* Yatayda başlangıçta hizalamak için */
+    flex-wrap: wrap; /* Alt alta sıralamak için */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+    overflow-x: hidden;
+}
+
+
+.playlist {
+    margin: 10px;
+    text-align: center;
+}
+
+.playlist img {
+    width: 150px; /* İsteğe bağlı olarak boyutu ayarlayabilirsiniz */
+    height: 150px; /* İsteğe bağlı olarak boyutu ayarlayabilirsiniz */
+    border-radius: 10px;
+}
+
+.playlist h3 {
+    margin-top: 10px;
+    font-size: 16px;
+}

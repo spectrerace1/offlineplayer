@@ -1,0 +1,51 @@
+/* AudioPlayer Component Styles */
+
+/* Ana konteyner stilini tanımla */
+.audio-player {
+    text-align: center;
+    margin: 20px;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Ses çaların görünümü */
+  audio {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  /* Ses kontrol butonları */
+  .audio-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .audio-controls button {
+ 
+  
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 50%;
+  
+    
+   
+  }
+  
+ 
+.song-info img{
+
+  max-width: 80px;
+  max-height: 80px;
+  border-radius: 10%;
+}  
+.text-container {
+  text-align: center;
+}
+
+.text-container span {
+  display: block;
+}
