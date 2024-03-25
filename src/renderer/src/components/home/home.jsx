@@ -15,7 +15,7 @@ const [password,setPasword]=useState("")
 
 async function login() {
     try {
-        const response = await axios.post("https://test.cloudmedia.com.tr/api/auth/login", {
+        const response = await axios.post("https://app.cloudmedia.com.tr/api/auth/login", {
             email: mail,
             password: password
         }, {

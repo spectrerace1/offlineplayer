@@ -121,7 +121,7 @@ ipcMain.on("get-user", (event) => {
 
 async function getAllSongsInPlaylists(user) {
   try {
-    const response = await axios.get(`https://test.cloudmedia.com.tr/api/playlista/${String(user.user.id)}`);
+    const response = await axios.get(`https://app.cloudmedia.com.tr/api/playlista/${String(user.user.id)}`);
     
     if (response.data) {
       const playlists = response.data.Playlist;
@@ -129,7 +129,7 @@ async function getAllSongsInPlaylists(user) {
 
       for (const playlist of playlists) {
        
-        const playlistResponse = await axios.get(`https://test.cloudmedia.com.tr/api/getsong/${playlist.id}`);
+        const playlistResponse = await axios.get(`https://app.cloudmedia.com.tr/api/getsong/${playlist.id}`);
         
         if (playlistResponse.data) {
           const songs = [playlistResponse.data]; // Şarkıları bir dizi içine yerleştir
