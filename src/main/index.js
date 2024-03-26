@@ -9,14 +9,7 @@ const   axios  = require('axios');
 const store = new Store();
 app.commandLine.appendSwitch('NSApplicationSupportsSecureRestorableState'); // NSApplicationDelegate protokolünü etkinleştirin
 
-app.on('ready', () => {
-  // NSApplicationDelegate protokolünü etkinleştirin
-  app.setActivationPolicy('regular');
 
-  // Uygulamanın geri kalanı buraya gelebilir
-  
-  createWindow();
-});
 
 function createWindow() {
 

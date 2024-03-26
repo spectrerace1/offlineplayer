@@ -46,9 +46,11 @@ function Playlist(props) {
                 type2: []
             };
 
-            campaigns.forEach(campaign => {
+           if(campaigns&&campaigns.data!==null){
+            campaigns?.forEach(campaign => {
                 newGroupedCampaigns['type' + campaign.CompanyType].push(campaign);
             });
+           } 
 
             setGroupedCampaigns(newGroupedCampaigns);
 
@@ -142,19 +144,29 @@ function Playlist(props) {
 
 
     useEffect(() => {
-        getCampaigns()
-    }, [])
+        getCampaigns();
+        const interval = setInterval(() => {
+            getCampaigns();
+        },1000*60*5); // 60000 milisaniye = 1 dakika
+
+        // useEffect kancası sona erdiğinde interval'i temizle
+        return () => clearInterval(interval);
+    }, [campainArray]);
+
     useEffect(() => {
         shufflePlaylist()
         convertCampaignsToSongs(groupedCampaigns.type2)
-    }, [selectedPlaylist])
+    }, [selectedPlaylist]);
+
     useEffect(() => {
         if(campainArray.length>0){
+
             setSavedPlaylists(campainJoinToPlaylist()) 
 
         }
-        
-        console.log("sdfsdfsd")
+        else{
+            setSavedPlaylists(newArray);
+        }
     }, [newArray, campainArray])
 
     return (
@@ -185,7 +197,7 @@ function Playlist(props) {
                 </div>
             </div>
             <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 99999 }}>
-                  <Player data={{savedPlaylists,props}}/> 
+                  <Player data={{savedPlaylists,props,groupedCampaigns}}/> 
             </div>
         </>
     );

@@ -179,7 +179,7 @@ const [playedCampaigns, setPlayedCampaigns] = useState(new Set());
   useEffect(() => {
     if(Object.values(props.data.selectedPlaylist).length > 0){
       playAudio();
-      getCampaigns();
+    
     }
     // Otomatik çalma işlemini gerçekleştir
    
