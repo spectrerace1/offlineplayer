@@ -178,10 +178,10 @@ function Playlist(props) {
                             <img src={props?.data.user.user?.artwork_url} alt="Logo" />
                             <span>{props?.data.user.user.name}</span>
                         </div>
-                        <div style={{ display: "flex", flexDirection: "column" }} className="navbar-info">
+                        {/* <div style={{ display: "flex", flexDirection: "column" }} className="navbar-info">
                             <span>Lisans Bitiş Süresi</span>
                             <span><Countdown date={Date.now() + (Number(zamanDamgasi) - Date.now())} /></span>
-                        </div>
+                        </div> */}
                         <div class="navbar-links">
                             <a href="#" onClick={() => logOut()}>Çıkış Yap</a>
                         </div>
