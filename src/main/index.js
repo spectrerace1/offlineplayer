@@ -85,14 +85,15 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 ipcMain.on("login-info",(event,data)=>{
+ 
   if(data){
-
+    console.log("-------",data)
     store.set("userinfo",data)
    
   }
 })
 ipcMain.on("log-out",(event,data)=>{
-  console.log(data)
+
   if(data==="log-out"){
 
     store.clear("userinfo")
@@ -116,7 +117,7 @@ ipcMain.on("get-user", (event) => {
 
 async function getAllSongsInPlaylists(user) {
   try {
-    const response = await axios.get(`https://app.cloudmedia.com.tr/api/playlista/${String(user.user.id)}`);
+    const response = await axios.get(`https://app.cloudmedia.com.tr/api/playlista/${String(user?.id)}`);
     
     if (response.data) {
       const playlists = response.data.Playlist;

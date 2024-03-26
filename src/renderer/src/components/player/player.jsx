@@ -12,13 +12,10 @@ const AudioPlayer = (props) => {
   const [campainClone, setCampainClone] = useState(props.data.groupedCampaigns.type0)
   const [showModal, setShowModal] = useState(false);
 
- console.log(showModal)
-
- 
   async function ezanDurumuKontrol() {
 
     return new Promise(function (resolve, reject) {
-      fetch("https://app.cloudmedia.com.tr/api/isezan/" + props?.data?.props?.data.user.user.id)
+      fetch("https://app.cloudmedia.com.tr/api/isezan/" + props?.data?.props?.data.user.id)
         .then(response => {
           if (!response.ok) {
             throw new Error("HTTP error, status = " + response.status);
@@ -27,12 +24,7 @@ const AudioPlayer = (props) => {
         })
         .then(data => {
 
-
-
           EzanVaktiApi(data)
-
-
-
 
         })
         .catch(error => {
@@ -46,7 +38,7 @@ const AudioPlayer = (props) => {
 
   function EzanVaktiApi(city) {
     let socket; // Soket değişkenini dışarıda tanımlıyoruz.
-    console.log(city)
+   
     // WebSocket bağlantısını kurma işlemini fonksiyon içine alıyoruz.
     function connectWebSocket() {
       // city.city değeri varsa sokete bağlan

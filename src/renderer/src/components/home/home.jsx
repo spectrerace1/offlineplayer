@@ -15,18 +15,21 @@ const [password,setPasword]=useState("")
 
 async function login() {
     try {
-        const response = await axios.post("https://app.cloudmedia.com.tr/api/auth/login", {
+         await axios.post("https://app.cloudmedia.com.tr/api/auth/login", {
             email: mail,
             password: password
         }, {
             headers: {
                 "Content-Type": "application/json",
             }
+        }).then(response=>{
+           
+            if(response.data){
+             window.electron.ipcRenderer.send("login-info", response?.data);
+             window.location.reload()
+            }
         });
-       if(response.data){
-        window.electron.ipcRenderer.send("login-info", response?.data);
-        window.location.reload()
-       }
+      
     } catch (error) {
         console.error("Login error:", error);
     }

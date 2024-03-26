@@ -7,7 +7,7 @@ import axios from "axios";
 import _ from "lodash";
 function Playlist(props) {
 
-    let newPlaylist=[]
+    
     const [selectedPlaylist, setSelectedPlaylist] = useState([]);
     const [savedPlaylists, setSavedPlaylists] = useState([]);
     const [campainArray, setCampaignArray] = useState([]);
@@ -35,7 +35,7 @@ function Playlist(props) {
 
     async function getCampaigns() {
         const camApi = "https://app.cloudmedia.com.tr/api/comapi/";
-        const userId = props.data.user.user.id
+        const userId = props?.data?.user?.id
         await axios.get(`${camApi}${userId}`).then(res => {
 
             const campaigns = res.data;
@@ -175,8 +175,8 @@ function Playlist(props) {
                 <nav class="navbar">
                     <div class="navbar-content">
                         <div class="navbar-logo">
-                            <img src={props?.data.user.user?.artwork_url} alt="Logo" />
-                            <span>{props?.data.user.user.name}</span>
+                            <img src={props?.data.user?.artwork_url} alt="Logo" />
+                            <span>{props?.data?.user?.name}</span>
                         </div>
                         {/* <div style={{ display: "flex", flexDirection: "column" }} className="navbar-info">
                             <span>Lisans Bitiş Süresi</span>
