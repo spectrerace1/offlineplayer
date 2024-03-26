@@ -7,6 +7,7 @@ const path = require('path');
 const Store = require('electron-store');
 const   axios  = require('axios');
 const store = new Store();
+
 app.commandLine.appendSwitch('NSApplicationSupportsSecureRestorableState'); // NSApplicationDelegate protokolünü etkinleştirin
 
 
@@ -19,6 +20,7 @@ function createWindow() {
     height: 670,
     show: false,
     autoHideMenuBar: true,
+    icon: join(__dirname,'../../src/renderer/src/assets/icon.ico'),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       nodeIntegration: true

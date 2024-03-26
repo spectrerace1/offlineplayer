@@ -11,7 +11,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: electron-app
+  executableName: Cloud Media
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
