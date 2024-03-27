@@ -245,7 +245,7 @@ const AudioPlayer = (props) => {
         </div>
       </div>
       <div>
-        <audio id="audio-player" src={props?.data?.savedPlaylists[audioIndex]?.playlink} controls autoPlay={playing} />
+        <audio id="audio-player" src={props?.data?.savedPlaylists[audioIndex]?.playlink}  autoPlay={playing} />
         <audio id="audio-player1" autoPlay={campainPlaying} />
       </div>
 
