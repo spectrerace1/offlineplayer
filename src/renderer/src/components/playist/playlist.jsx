@@ -159,15 +159,16 @@ function Playlist(props) {
     }, [selectedPlaylist]);
 
     useEffect(() => {
-        if(campainArray.length>0){
 
+        if(campainArray.length>0){
+    
             setSavedPlaylists(campainJoinToPlaylist()) 
 
         }
         else{
             setSavedPlaylists(newArray);
         }
-    }, [newArray, campainArray])
+    }, [newArray, campainArray,groupedCampaigns])
 
     return (
         <>
