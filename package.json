@@ -1,5 +1,5 @@
 {
-  "name": "Cloud Media",
+  "name": "cloud-media",
   "version": "1.0.0",
   "description": "An Electron application with React",
   "main": "./out/main/index.js",
@@ -17,6 +17,11 @@
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux"
   },
+  "repository": "https://github.com/cloudmedi/offlineplayer",
+  "publish":{
+    "provider":"github",
+     "releaseType":"release"
+  },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
@@ -25,6 +30,7 @@
     "electron-download-manager": "^2.1.2",
     "electron-router-dom": "^1.0.5",
     "electron-store": "^8.2.0",
+    "electron-updater": "^6.1.8",
     "lodash": "^4.17.21",
     "react-countdown": "^2.3.5",
     "react-h5-audio-player": "^3.9.1",
@@ -36,7 +42,7 @@
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
     "@vitejs/plugin-react": "^4.2.1",
     "electron": "^28.2.6",
-    "electron-builder": "^24.9.1",
+    "electron-builder": "^24.13.3",
     "electron-vite": "^2.0.0",
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",

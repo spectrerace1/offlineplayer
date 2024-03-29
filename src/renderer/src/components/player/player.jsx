@@ -181,7 +181,7 @@ const AudioPlayer = (props) => {
   // Bir sonraki şarkıya geç
   const playNext = () => {
 
-    if (audioIndex < props?.data.savedPlaylists.length - 1) {
+    if (audioIndex < props?.data?.savedPlaylists?.length - 1) {
 
       setAudioIndex(prevIndex => prevIndex + 1);
     } else {
@@ -211,10 +211,10 @@ const AudioPlayer = (props) => {
     return () => {
       audioElement.removeEventListener('ended', playNext);
     };
-  }, [audioIndex, props.data.savedPlaylists]);
+  }, [audioIndex]);
 
   useEffect(() => {
-    console.log(props.data.savedPlaylists)
+    
     setAudioIndex(0)
     if (props?.data?.savedPlaylists?.length > 0) {
       playAudio()
@@ -245,7 +245,7 @@ const AudioPlayer = (props) => {
         </div>
       </div>
       <div>
-        <audio id="audio-player" src={props?.data?.savedPlaylists[audioIndex]?.playlink}  autoPlay={playing} />
+        <audio id="audio-player" src={props?.data?.savedPlaylists[audioIndex]?.playlink} controls autoPlay={playing} />
         <audio id="audio-player1" autoPlay={campainPlaying} />
       </div>
 

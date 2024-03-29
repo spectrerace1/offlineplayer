@@ -17,8 +17,9 @@ function Playlist(props) {
         // Burada seçilen playlisti savedPlaylists array'ine ekleyebilirsiniz.
         
     };
-
+console.log(selectedPlaylist)
     var tarih = new Date(props.data.user.expires_at);
+   
     var zamanDamgasi = tarih.getTime();
     if (Date.now() + (Number(zamanDamgasi) - Date.now()) === 0) {
         logOut()
@@ -160,7 +161,7 @@ function Playlist(props) {
 
     useEffect(() => {
 
-        if(campainArray.length>0){
+        if(campainArray?.length>0){
     
             setSavedPlaylists(campainJoinToPlaylist()) 
 
@@ -168,7 +169,7 @@ function Playlist(props) {
         else{
             setSavedPlaylists(newArray);
         }
-    }, [newArray, campainArray,groupedCampaigns])
+    }, [newArray, campainArray])
 
     return (
         <>

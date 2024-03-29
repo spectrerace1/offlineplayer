@@ -25,6 +25,8 @@ async function login() {
         }).then(response=>{
            
             if(response.data){
+
+                
              window.electron.ipcRenderer.send("login-info", response?.data);
              window.location.reload()
             }
