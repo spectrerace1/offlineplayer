@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import Home from './components/home/home'
-import Playlist from './components/playist/playlist'
+import Home from './components/home/home';
+import Playlist from './components/playist/playlist';
 
 function App() {
   const [user, setUser] = useState(null);
   const [isLoggin, setIsLoggin] = useState(false);
-  const [profil, setProfil] = useState();
   const [updateMessage, setUpdateMessage] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -34,22 +34,36 @@ function App() {
 
   useEffect(() => {
     window.electron.ipcRenderer.send("updateMessage");
-    window.electron.ipcRenderer.once('update-message-reply', (_, data) => {
-      console.log(data)
+    window.electron.ipcRenderer.once("update-message-reply", (_2, data) => {
       setUpdateMessage(data);
+      if (data.includes('Güncelleme mevcut')) {
+        setIsModalOpen(true);
+      }
     });
-
     return () => {
-      window.electron.ipcRenderer.removeAllListeners('update-message-reply');
+      window.electron.ipcRenderer.removeAllListeners("update-message-reply");
     };
   }, []);
-console.log(updateMessage);
+
+  const handleUpdate = () => {
+    window.electron.ipcRenderer.send('start-update');
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       {isLoggin ? <Playlist data={user} /> : <Home />}
-      {updateMessage && <p>{updateMessage}</p>}
+     {/*  {updateMessage && (
+        <div className="modal" style={{ display: isModalOpen ? 'block' : 'none' }}>
+          <div className="modal-content">
+            <span className="close" onClick={() => setIsModalOpen(false)}>&times;</span>
+            <p>{updateMessage}</p>
+            <button onClick={handleUpdate}>Güncellemeyi Başlat</button>
+          </div>
+        </div>
+      )} */}
     </>
-  )
+  );
 }
 
 export default App;

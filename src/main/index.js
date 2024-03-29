@@ -1,4 +1,4 @@
-const { app, shell, BrowserWindow, ipcMain } = require('electron');
+const { app, shell, BrowserWindow, ipcMain, dialog } = require('electron');
 const { join } = require('path');
 const { electronApp, optimizer, is } = require('@electron-toolkit/utils');
 
@@ -8,7 +8,7 @@ const axios = require('axios');
 const { autoUpdater } = require("electron-updater");
 const store = new Store();
 
-autoUpdater.autoDownload = false;
+autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
 
 app.commandLine.appendSwitch('NSApplicationSupportsSecureRestorableState'); // NSApplicationDelegate protokolünü etkinleştirin
@@ -69,21 +69,44 @@ app.whenReady().then(() => {
   autoUpdater.checkForUpdates();
 
   // Güncelleme olaylarını dinleme
+  autoUpdater.on("checking-for-update", () => {
+    mainWindow.webContents.send('update-message-reply', 'Güncelleme Kontrol ediliyor...');
+  });
+
   autoUpdater.on('update-available', () => {
-    mainWindow.webContents.send('update-message-reply', 'Güncelleme mevcut.');
+    mainWindow.webContents.send('update-message-reply', 'Güncelleme mevcut. İndiriliyor...');
   });
 
   autoUpdater.on('update-not-available', () => {
     mainWindow.webContents.send('update-message-reply', 'Güncelleme mevcut değil.');
   });
 
+  autoUpdater.on("download-progress", () => {
+    mainWindow.webContents.send('update-message-reply', 'Güncelleme İndiriliyor...');
+  });
+
   autoUpdater.on('update-downloaded', () => {
-    mainWindow.webContents.send('update-message-reply', 'Güncelleme indirildi.');
+    mainWindow.webContents.send('update-message-reply', 'Güncelleme indirildi. Uygulama yeniden başlatılıyor...');
+    dialog.showMessageBox(mainWindow, {
+      type: 'info',
+      message: 'Yeni bir güncelleme mevcut. Uygulamayı yeniden başlatmak için "Tamam" tuşuna basın.',
+      buttons: ['Tamam']
+    }).then(() => {
+      autoUpdater.quitAndInstall();
+    });
   });
 
   autoUpdater.on('error', (error) => {
     mainWindow.webContents.send('update-message-reply', `Güncelleme sırasında bir hata oluştu: ${error.message}`);
   });
+
+ /*  ipcMain.on("start-update", () => {
+    autoUpdater.downloadUpdate();
+  });
+
+  ipcMain.on("quit-and-install", () => {
+    autoUpdater.quitAndInstall();
+  }); */
 });
 
 app.on('window-all-closed', () => {

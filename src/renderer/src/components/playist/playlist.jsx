@@ -190,8 +190,8 @@ console.log(selectedPlaylist)
                     </div>
                 </nav>
                 <div class="playlist-container">
-                    {props?.data?.res.map(res => (
-                        <div className="playlist" key={res.playlistName} style={{ cursor: "pointer" }} onClick={() => handlePlaylistClick(res)}>
+                    {props?.data?.res?.map(res => (
+                        <div className="playlist" key={res?.playlistName} style={{ cursor: "pointer" }} onClick={() => handlePlaylistClick(res)}>
                             <img src={res.playlistImage} alt={res.playlistName} />
                             <h3 >{res.playlistName}</h3>
                         </div>
