@@ -42,6 +42,7 @@ function App() {
     });
     return () => {
       window.electron.ipcRenderer.removeAllListeners("update-message-reply");
+      console.log("oğuzhan abim");
     };
   }, []);
 
