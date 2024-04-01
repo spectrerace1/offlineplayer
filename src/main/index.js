@@ -74,7 +74,7 @@ app.whenReady().then(() => {
   });
 
   autoUpdater.on('update-available', () => {
-    mainWindow.webContents.send('update-message-reply', 'Güncelleme mevcut. İndiriliyor...');
+    mainWindow.webContents.send('update-message-reply', 'Güncelleme mevcut. ');
   });
 
   autoUpdater.on('update-not-available', () => {
@@ -100,13 +100,11 @@ app.whenReady().then(() => {
     mainWindow.webContents.send('update-message-reply', `Güncelleme sırasında bir hata oluştu: ${error.message}`);
   });
 
- /*  ipcMain.on("start-update", () => {
+  ipcMain.on("start-update", () => {
     autoUpdater.downloadUpdate();
   });
 
-  ipcMain.on("quit-and-install", () => {
-    autoUpdater.quitAndInstall();
-  }); */
+
 });
 
 app.on('window-all-closed', () => {
@@ -130,6 +128,7 @@ ipcMain.on("log-out", (event, data) => {
 ipcMain.on("get-user", async (event) => {
   const user = store.get("userinfo");
   if (user) {
+
     const allPlaylists = await getAllSongsInPlaylists(user);
     event.reply("get-user-reply", { allPlaylists, user });
   }
@@ -139,6 +138,7 @@ async function getAllSongsInPlaylists(user) {
   try {
     const response = await axios.get(`https://app.cloudmedia.com.tr/api/playlista/${String(user?.id)}`);
     if (response.data) {
+     
       const playlists = response.data.Playlist;
       const allPlaylists = [];
 

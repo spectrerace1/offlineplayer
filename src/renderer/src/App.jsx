@@ -53,7 +53,7 @@ function App() {
   return (
     <>
       {isLoggin ? <Playlist data={user} /> : <Home />}
-     {/*  {updateMessage && (
+       {updateMessage && (
         <div className="modal" style={{ display: isModalOpen ? 'block' : 'none' }}>
           <div className="modal-content">
             <span className="close" onClick={() => setIsModalOpen(false)}>&times;</span>
@@ -61,7 +61,7 @@ function App() {
             <button onClick={handleUpdate}>Güncellemeyi Başlat</button>
           </div>
         </div>
-      )} */}
+      )} 
     </>
   );
 }

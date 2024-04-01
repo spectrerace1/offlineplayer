@@ -57,7 +57,8 @@ async function login() {
                     <input type="password" onChange={(e)=>setPasword(e.target.value)}   />
                    </div>
                    <div>
-                  <button type="button" onClick={login}>Giriş Yap</button> 
+                  <button type="button" onClick={login}>Giriş Yap</button>  
+                
                    </div>
                 </div>
             </div>

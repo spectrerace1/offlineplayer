@@ -11,6 +11,7 @@ const AudioPlayer = (props) => {
   const [campainPlaying, setCampainPlaying] = useState(false);
   const [campainClone, setCampainClone] = useState(props.data.groupedCampaigns.type0)
   const [showModal, setShowModal] = useState(false);
+  const [playerlistLengt, setPlayerlistLenght] = useState(0)
 
   async function ezanDurumuKontrol() {
 
@@ -38,7 +39,7 @@ const AudioPlayer = (props) => {
 
   function EzanVaktiApi(city) {
     let socket; // Soket değişkenini dışarıda tanımlıyoruz.
-   
+
     // WebSocket bağlantısını kurma işlemini fonksiyon içine alıyoruz.
     function connectWebSocket() {
       // city.city değeri varsa sokete bağlan
@@ -60,7 +61,7 @@ const AudioPlayer = (props) => {
 
           if (JSON.parse(event.data)["ezan"]["genelEzanDurumu"] === "Ezan Okunuyor" && city.ezan === "True") {
             ezanPlaying(JSON.parse(event.data)["ezan"]["dif"]);
-           
+
           }
         };
 
@@ -94,7 +95,7 @@ const AudioPlayer = (props) => {
       setTimeout(() => {
         setShowModal(false)
         playAudio()
-      }, 60*1000)
+      }, 60 * 1000)
     }
 
   }
@@ -134,7 +135,7 @@ const AudioPlayer = (props) => {
 
 
 
-  }, [audioIndex, props.data.groupedCampaigns]);
+  }, [audioIndex, props?.data?.groupedCampaigns]);
 
 
   const campainAudioPlay = (audioUrl) => {
@@ -174,20 +175,17 @@ const AudioPlayer = (props) => {
         const audioElement = document.getElementById('audio-player');
         audioElement.src = audioUrl;
         audioElement.load();
+        if (playing) {
+          audioElement.play();
+        }
       }
     }
-  }, [props?.data?.savedPlaylists]);
+  }, [audioIndex, playing, props?.data?.savedPlaylists]);
+  
 
   // Bir sonraki şarkıya geç
-  const playNext = () => {
 
-    if (audioIndex < props?.data?.savedPlaylists?.length - 1) {
-
-      setAudioIndex(prevIndex => prevIndex + 1);
-    } else {
-      setAudioIndex(0); // Eğer son şarkıysa başa dön
-    }
-  };
+  
 
   // Bir önceki şarkıya geç
   const playPrevious = () => {
@@ -205,27 +203,35 @@ const AudioPlayer = (props) => {
   };
 
   useEffect(() => {
+    const playNext = () => {
+      if (audioIndex < props?.data?.savedPlaylists.length - 1) {
+        setAudioIndex(audioIndex + 1);
+      } else {
+        setAudioIndex(0);
+      }
+    };
+
     const audioElement = document.getElementById('audio-player');
     audioElement.addEventListener('ended', playNext);
 
     return () => {
       audioElement.removeEventListener('ended', playNext);
     };
-  }, [audioIndex]);
+  }, [audioIndex ,props.data.savedPlaylists]);
 
   useEffect(() => {
-    
     setAudioIndex(0)
+
     if (props?.data?.savedPlaylists?.length > 0) {
       playAudio()
+      setPlayerlistLenght(props?.data?.savedPlaylists?.length)
     }
+  }, [props?.data?.savedPlaylists]);
 
-
-  }, [props.data.savedPlaylists]);
   useEffect(() => {
-    ezanDurumuKontrol()
+    // ezanDurumuKontrol()
   }, [])
-
+  console.log(playerlistLengt)
   return (
     <>
       <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} className="audio-player">
@@ -250,11 +256,11 @@ const AudioPlayer = (props) => {
       </div>
 
       <div className="modal-container">
-       
+
         {showModal && (
           <div className="modal">
             <div className="modal-content">
-              
+
               <p>Ezan vakti. Müzik durduruldu.</p>
             </div>
           </div>

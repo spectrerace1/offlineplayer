@@ -17,7 +17,7 @@ function Playlist(props) {
         // Burada seçilen playlisti savedPlaylists array'ine ekleyebilirsiniz.
         
     };
-console.log(selectedPlaylist)
+
     var tarih = new Date(props.data.user.expires_at);
    
     var zamanDamgasi = tarih.getTime();
@@ -190,7 +190,7 @@ console.log(selectedPlaylist)
                     </div>
                 </nav>
                 <div class="playlist-container">
-                    {props?.data?.res?.map(res => (
+                    {props?.data?.allPlaylists?.map(res => (
                         <div className="playlist" key={res?.playlistName} style={{ cursor: "pointer" }} onClick={() => handlePlaylistClick(res)}>
                             <img src={res.playlistImage} alt={res.playlistName} />
                             <h3 >{res.playlistName}</h3>
@@ -199,7 +199,7 @@ console.log(selectedPlaylist)
                 </div>
             </div>
             <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 99999 }}>
-                  <Player data={{savedPlaylists,props,groupedCampaigns}}/> 
+                 <Player data={{savedPlaylists,props,groupedCampaigns}}/>  
             </div>
         </>
     );
