@@ -123,11 +123,14 @@ ipcMain.on("log-out", (event, data) => {
 ipcMain.on("get-user", async (event) => {
   const user = store.get("userinfo");
   if (user) {
-
+ 
+  // const genres = await getAllMoodsAndGenre()
     const allPlaylists = await getAllSongsInPlaylists(user);
     event.reply("get-user-reply", { allPlaylists, user });
   }
 });
+
+
 
 async function getAllSongsInPlaylists(user) {
   try {
@@ -167,3 +170,51 @@ async function getAllSongsInPlaylists(user) {
     return [];
   }
 }
+
+async function getAllMoodsAndGenre() {
+  const allow_genres = [
+      {
+          "id": 2,
+          "name": "Pop",
+          "discover": 1,
+          "permalink_url": "https://app.cloudmedia.com.tr/discover/genre/pop"
+      },
+      {
+          "id": 3,
+          "name": "Lofi",
+          "discover": 1,
+          "permalink_url": "https://app.cloudmedia.com.tr/discover/genre/lofi"
+      },
+      // Diğer türler burada
+  ];
+
+  const genreApi = "https://app.cloudmedia.com.tr/api/genre/";
+
+  const downloadedSongsByGenre = {}; // Her tür için şarkıları gruplamak için boş bir nesne
+
+  try {
+      for (const allow_genre of allow_genres) {
+          const genreResponse = await axios.get(`${genreApi}${allow_genre.name.replace(/\s+/g, '-').toLowerCase()}`);
+          if (genreResponse.data) {
+              const genre = genreResponse.data.genre;
+              if (genre && genre.songs && genre.songs.data) {
+                  const songsData = genre.songs.data;
+                  // İlgili türün altındaki şarkıları downloadedSongsByGenre nesnesine ekleyelim
+                  if (!downloadedSongsByGenre[genre.name]) {
+                      downloadedSongsByGenre[genre.name] = [];
+                  }
+                  downloadedSongsByGenre[genre.name].push(...songsData);
+              }
+          }
+      }
+  } catch (error) {
+      console.error("Error occurred:", error);
+      return [];
+  }
+
+  // Her türün altındaki şarkıları gruplamış nesneyi döndürelim
+  return downloadedSongsByGenre;
+}
+
+
+

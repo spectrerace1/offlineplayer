@@ -7,7 +7,7 @@ import axios from "axios";
 import _ from "lodash";
 function Playlist(props) {
 
-    
+    console.log(props)
     const [selectedPlaylist, setSelectedPlaylist] = useState([]);
     const [savedPlaylists, setSavedPlaylists] = useState([]);
     const [campainArray, setCampaignArray] = useState([]);
@@ -40,7 +40,7 @@ function Playlist(props) {
         await axios.get(`${camApi}${userId}`).then(res => {
 
             const campaigns = res.data;
-
+console.log(campaigns)
             const newGroupedCampaigns = {
                 type0: [],
                 type1: [],
@@ -199,7 +199,7 @@ function Playlist(props) {
                 </div>
             </div>
             <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 99999 }}>
-                 <Player data={{savedPlaylists,props,groupedCampaigns}}/>  
+                <Player data={{savedPlaylists,props,groupedCampaigns}}/>  
             </div>
         </>
     );

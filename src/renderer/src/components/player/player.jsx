@@ -92,10 +92,10 @@ const AudioPlayer = (props) => {
     setShowModal(true);
     pauseAudio()
     if (dif === 10) {
-      setTimeout(() => {
+    
         setShowModal(false)
         playAudio()
-      }, 60 * 1000)
+      
     }
 
   }
@@ -180,7 +180,7 @@ const AudioPlayer = (props) => {
         }
       }
     }
-  }, [audioIndex, playing, props?.data?.savedPlaylists]);
+  }, [audioIndex, props?.data?.savedPlaylists]);
   
 
   // Bir sonraki şarkıya geç
