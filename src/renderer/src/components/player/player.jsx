@@ -229,9 +229,9 @@ const AudioPlayer = (props) => {
   }, [props?.data?.savedPlaylists]);
 
   useEffect(() => {
-    // ezanDurumuKontrol()
+     ezanDurumuKontrol()
   }, [])
-  console.log(playerlistLengt)
+  
   return (
     <>
       <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} className="audio-player">

@@ -8,7 +8,7 @@ const axios = require('axios');
 const { autoUpdater } = require("electron-updater");
 const store = new Store();
 
-autoUpdater.autoDownload = true;
+autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = true;
 
 app.commandLine.appendSwitch('NSApplicationSupportsSecureRestorableState'); // NSApplicationDelegate protokolünü etkinleştirin
@@ -69,9 +69,7 @@ app.whenReady().then(() => {
   autoUpdater.checkForUpdates();
 
   // Güncelleme olaylarını dinleme
-  autoUpdater.on("checking-for-update", () => {
-    mainWindow.webContents.send('update-message-reply', 'Güncelleme Kontrol ediliyor...');
-  });
+
 
   autoUpdater.on('update-available', () => {
     mainWindow.webContents.send('update-message-reply', 'Güncelleme mevcut. ');
@@ -81,9 +79,6 @@ app.whenReady().then(() => {
     mainWindow.webContents.send('update-message-reply', 'Güncelleme mevcut değil.');
   });
 
-  autoUpdater.on("download-progress", () => {
-    mainWindow.webContents.send('update-message-reply', 'Güncelleme İndiriliyor...');
-  });
 
   autoUpdater.on('update-downloaded', () => {
     mainWindow.webContents.send('update-message-reply', 'Güncelleme indirildi. Uygulama yeniden başlatılıyor...');
