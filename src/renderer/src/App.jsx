@@ -44,7 +44,8 @@ function App() {
       window.electron.ipcRenderer.removeAllListeners("update-message-reply");
      
     };
-  }, []);
+  }, [updateMessage]);
+  console.log(updateMessage);
 
   const handleUpdate = () => {
     window.electron.ipcRenderer.send('start-update');
