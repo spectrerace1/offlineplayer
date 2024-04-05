@@ -39,6 +39,9 @@ function App() {
       if (data.includes('Güncelleme mevcut')) {
         setIsModalOpen(true);
       }
+      else if (data.includes('Güncelleme indiriliyor.')) {
+        setIsModalOpen(true);
+      }
     });
     return () => {
       window.electron.ipcRenderer.removeAllListeners("update-message-reply");

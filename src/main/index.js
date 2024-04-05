@@ -78,6 +78,9 @@ app.whenReady().then(() => {
   autoUpdater.on('update-not-available', () => {
     mainWindow.webContents.send('update-message-reply', 'Güncelleme mevcut değil.');
   });
+  autoUpdater.on("download-progress", () => {
+    mainWindow.webContents.send('update-message-reply', 'Güncelleme indiriliyor.');
+  });
 
 
   autoUpdater.on('update-downloaded', () => {
