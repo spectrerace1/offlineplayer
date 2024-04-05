@@ -495,9 +495,7 @@ setAudioIndex(0);
       audioElement.src = audioUrl;
       audioElement.load();
     }
-  }, [
-    
-  ]);
+  }, [props.data.click ]);
 
   useEffect(() => {
      ezanDurumuKontrol()
