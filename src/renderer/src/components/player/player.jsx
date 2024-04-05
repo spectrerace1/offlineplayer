@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { PiPauseCircleLight } from "react-icons/pi";
 import { PiPlayCircleLight } from "react-icons/pi";
 import _ from "lodash"
@@ -6,17 +6,198 @@ import './player.css';
 import axios from 'axios';
 
 const AudioPlayer = (props) => {
+
   const [audioIndex, setAudioIndex] = useState(0); // Şu an çalınan şarkının indeksi
   const [playing, setPlaying] = useState(false); // Çalma durumu
   const [campainPlaying, setCampainPlaying] = useState(false);
-  const [campainClone, setCampainClone] = useState(props.data.groupedCampaigns.type0)
+
   const [showModal, setShowModal] = useState(false);
   const [playerlistLengt, setPlayerlistLenght] = useState(0)
+
+  const [savedPlaylists, setSavedPlaylists] = useState([]);
+  const [clonePlaylist, setClonePlaylist] = useState([]);
+  const [campainArray, setCampaignArray] = useState([]);
+  const [campainArray1, setCampaignArray1] = useState([]);
+  const [newArray, setNewArray] = useState([]); // Şarkı dizisi
+  const previousType2Ref = useRef(null);
+  const [groupedCampaigns, setGroupedCampaigns] = useState({
+    type0: [],
+    type1: [],
+    type2: []
+});
+const [campainClone, setCampainClone] = useState(groupedCampaigns.type0)
+async function getCampaigns() {
+    const camApi = "https://app.cloudmedia.com.tr/api/comapi/";
+    const userId = props?.data?.user?.id
+    await axios.get(`${camApi}${userId}`).then(res => {
+
+        const campaigns = res.data;
+
+        const newGroupedCampaigns = {
+            type0: [],
+            type1: [],
+            type2: []
+        };
+
+       if(campaigns&&campaigns.data!==null){
+        campaigns?.forEach(campaign => {
+            newGroupedCampaigns['type' + campaign.CompanyType].push(campaign);
+        });
+       } 
+
+        setGroupedCampaigns(newGroupedCampaigns);
+
+    }).catch(error => {
+        console.error('Error fetching campaigns:', error);
+    });
+}
+
+function shufflePlaylist() {
+    let shuffledArray = []; // Yeni bir dizi oluştur
+    if (Object.values(props?.data?.selectedPlaylist).length > 0 && props?.data?.selectedPlaylist.songs[0].song) {
+
+        const songs = props?.data?.selectedPlaylist?.songs[0]?.song;
+
+        songs.forEach(song => {
+            shuffledArray.push({ // Yeni diziye karıştırılmış şarkıları ekle
+                title: song.title || "",
+                genre: song.genre || "",
+                mood: song.mood || "",
+                duration: song.duration || 0,
+                artwork_url: song.artwork_url || "",
+                playlink: song.playlink || ""
+            });
+        });
+
+        shuffledArray = _.shuffle(shuffledArray); // Tüm şarkıları karıştır
+        setNewArray(shuffledArray); // Karıştırılmış diziyi ayarla
+    }
+}
+function convertCampaignsToSongs(campaigns) {
+    const songs = [];
+    campaigns.sort((a, b) => a.CompanyValue - b.CompanyValue);
+    campaigns.forEach(campaign => {
+        const companyValue = campaign.CompanyValue;
+        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const currentDay = days[new Date().getDay()];
+
+        if (campaign[currentDay] === 1) {
+            const newSong = {
+                title: campaign.CompanyName || "",
+                genre: "", // Belirtilmemiş
+                mood: "", // Belirtilmemiş
+                duration: 0, // Belirtilmemiş
+                artwork_url: "", // Belirtilmemiş
+                playlink: campaign.path || "",
+                companyValue: campaign.CompanyValue
+            };
+            songs.push(newSong)
+        }
+    });
+
+    setCampaignArray(songs);
+
+}
+function convertCampaignsToSongs1(campaigns) {
+    const songs = [];
+    campaigns.sort((a, b) => a.CompanyValue - b.CompanyValue);
+    campaigns.forEach(campaign => {
+        const companyValue = campaign.CompanyValue;
+        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const currentDay = days[new Date().getDay()];
+
+        if (campaign[currentDay] === 1) {
+            const newSong = {
+                title: campaign.CompanyName || "",
+                genre: "", // Belirtilmemiş
+                mood: "", // Belirtilmemiş
+                duration: 0, // Belirtilmemiş
+                artwork_url: "", // Belirtilmemiş
+                playlink: campaign.path || "",
+                companyValue: campaign.CompanyValue
+            };
+            songs.push(newSong)
+        }
+    });
+
+    setCampaignArray1(songs);
+
+}
+function campainJoinToPlaylist() {
+  if (newArray.length > 0 && campainArray.length > 0) {
+      let joinSongArray = []
+      let joinCampainArray = _.clone(campainArray);
+      let counter = 1;
+
+      // campainArray'deki her bir kampanyayı işleyelim
+      _.each(newArray, (song, songIndex) => {
+
+          const campaing = _.find(joinCampainArray, { 'companyValue': counter });
+
+
+          if (campaing) {
+
+              joinSongArray.push(song);
+              joinSongArray.push(campaing)
+
+              counter = 0;
+              _.remove(joinCampainArray, campaing);
+              if (joinCampainArray.length === 0) {
+                  joinCampainArray = _.clone(campainArray);
+              }
+
+          }
+          else {
+              joinSongArray.push(song)
+          }
+          counter++
+      });
+
+   return  joinSongArray
+
+  }
+}
+function campainJoinToPlaylist1() {
+    if (newArray.length > 0 && campainArray1.length > 0) {
+        let joinSongArray = []
+        let joinCampainArray = _.clone(campainArray1);
+        let counter = 1;
+
+        // campainArray'deki her bir kampanyayı işleyelim
+        _.each(newArray, (song, songIndex) => {
+
+            const campaing = _.find(joinCampainArray, { 'companyValue': counter });
+
+
+            if (campaing) {
+
+                joinSongArray.push(song);
+                joinSongArray.push(campaing)
+
+                counter = 0;
+                _.remove(joinCampainArray, campaing);
+                if (joinCampainArray.length === 0) {
+                    joinCampainArray = _.clone(campainArray1);
+                }
+
+            }
+            else {
+                joinSongArray.push(song)
+            }
+            counter++
+        });
+
+     return  joinSongArray
+
+    }
+}
+
+
 
   async function ezanDurumuKontrol() {
 
     return new Promise(function (resolve, reject) {
-      fetch("https://app.cloudmedia.com.tr/api/isezan/" + props?.data?.props?.data.user.id)
+      fetch("https://app.cloudmedia.com.tr/api/isezan/" + props?.data?.user.id)
         .then(response => {
           if (!response.ok) {
             throw new Error("HTTP error, status = " + response.status);
@@ -50,8 +231,8 @@ const AudioPlayer = (props) => {
 
         // WebSocket bağlantısı açıldığında
         socket.onopen = function (event) {
-          console.log("WebSocket bağlantısı açıldı.");
-          console.log(city.city);
+        /*   console.log("WebSocket bağlantısı açıldı.");
+          console.log(city.city); */
           socket.send(city.city); // Şehir bilgisini mesaj olarak gönder
         };
 
@@ -100,6 +281,74 @@ const AudioPlayer = (props) => {
 
   }
 
+ useEffect(()=>{
+
+shufflePlaylist();
+convertCampaignsToSongs(groupedCampaigns.type2);
+
+
+  },[props?.data?.selectedPlaylist]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // groupedCampaigns?.type2 değerini doğrudan alın
+      const currentType2 = groupedCampaigns?.type2;
+  /*  console.log("currentType2 :>> ", currentType2); */
+      // Bir önceki groupedCampaigns?.type2 değerini doğrudan alın
+      const previousType2 = previousType2Ref.current;
+     /*  console.log("previousType2 :>> ", previousType2); */
+      // Eğer bir önceki groupedCampaigns?.type2 değeri yoksa veya mevcut değer ile farklı ise
+      if ( !_.isEqual(previousType2, currentType2)) {
+        if(previousType2!==null){
+          playNext(currentType2)
+        }   // Yeni groupedCampaigns?.type2 değerini önceki değer olarak saklayın
+        previousType2Ref.current = currentType2;
+  
+        // playNext fonksiyonunu çağırın
+       
+      }
+    }, 1000 *60*5);
+  
+    return () => clearInterval(interval);
+  }, [groupedCampaigns?.type2]);
+
+  const playNext =  async (currentType2) => {
+    shufflePlaylist();
+    await  convertCampaignsToSongs1(currentType2);
+   
+   
+    
+  };
+
+
+  useEffect(()=>{
+    if(campainArray1?.length > 0){
+      setClonePlaylist(campainJoinToPlaylist1());
+    } else {
+      setClonePlaylist(newArray);
+    }
+
+  },[campainArray1])
+  useEffect(() => {
+
+    if(campainArray?.length>0){
+
+        setSavedPlaylists(campainJoinToPlaylist()) 
+
+    }
+    else{
+        setSavedPlaylists(newArray);
+    }
+}, [campainArray, props?.data?.selectedPlaylist]);
+
+useEffect(() => {
+  getCampaigns();
+  const interval = setInterval(() => {
+      getCampaigns();
+  },1000 *60*5); // 60000 milisaniye = 1 dakika
+
+  // useEffect kancası sona erdiğinde interval'i temizle
+  return () => clearInterval(interval);
+}, []);
 
   useEffect(() => {
 
@@ -113,7 +362,7 @@ const AudioPlayer = (props) => {
       const options = { weekday: 'short' };
       const day = today.toLocaleDateString('eu-US', options);
 
-      const matchedCampaign = campainClone.find(campaign => {
+      const matchedCampaign = campainClone?.find(campaign => {
         const [campaignHour, campaignMinute] = campaign.CompanyValue.split(':');
         return parseInt(campaignHour) === currentHour && parseInt(campaignMinute) === currentMinute && campaign[day] === 1;
       });
@@ -169,8 +418,8 @@ const AudioPlayer = (props) => {
 
   // Şarkı dizisi veya audioIndex değiştiğinde yeni şarkıyı yükle
   useEffect(() => {
-    if (props?.data.savedPlaylists.length > 0) {
-      const audioUrl = props?.data.savedPlaylists[audioIndex]?.playlink;
+    if (savedPlaylists > 0) {
+      const audioUrl = savedPlaylists[audioIndex]?.playlink;
       if (audioUrl) {
         const audioElement = document.getElementById('audio-player');
         audioElement.src = audioUrl;
@@ -180,7 +429,7 @@ const AudioPlayer = (props) => {
         }
       }
     }
-  }, [audioIndex, props?.data?.savedPlaylists]);
+  }, [audioIndex, props?.data?.selectedPlaylist]);
   
 
   // Bir sonraki şarkıya geç
@@ -203,35 +452,46 @@ const AudioPlayer = (props) => {
   };
 
   useEffect(() => {
+    
+  
     const playNext = () => {
-      if (audioIndex < props?.data?.savedPlaylists.length - 1) {
+      
+      if (audioIndex < savedPlaylists?.length - 1) {
         setAudioIndex(audioIndex + 1);
+        if (clonePlaylist?.length > 0 && !_.isEqual(clonePlaylist, savedPlaylists)) {
+          // playNext fonksiyonunu tetikleyin ve clonePlaylist'i çalmaya başlayın
+          
+          setSavedPlaylists(clonePlaylist)
+         
+        } 
+      
       } else {
         setAudioIndex(0);
       }
+    
     };
-
+   
     const audioElement = document.getElementById('audio-player');
     audioElement.addEventListener('ended', playNext);
 
     return () => {
       audioElement.removeEventListener('ended', playNext);
     };
-  }, [audioIndex ,props.data.savedPlaylists]);
+  }, [audioIndex,savedPlaylists]);
 
   useEffect(() => {
-    setAudioIndex(0)
-
-    if (props?.data?.savedPlaylists?.length > 0) {
+    
+setAudioIndex(0);
+   
       playAudio()
-      setPlayerlistLenght(props?.data?.savedPlaylists?.length)
-    }
-  }, [props?.data?.savedPlaylists]);
+      
+    
+  }, []);
 
   useEffect(() => {
      ezanDurumuKontrol()
   }, [])
-  
+ 
   return (
     <>
       <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} className="audio-player">
@@ -243,15 +503,15 @@ const AudioPlayer = (props) => {
           )}
         </div>
         <div className='song-info'>
-          <img src={props?.data?.savedPlaylists[audioIndex]?.artwork_url} alt="" srcset="" />
+          <img src={savedPlaylists[audioIndex]?.artwork_url} alt="" srcset="" />
           <div className='text-container'>
-            <span style={{ fontSize: "22px" }}>{props?.data?.savedPlaylists.playlistName}</span>
-            <span>{props?.data?.savedPlaylists[audioIndex]?.title}</span>
+            <span style={{ fontSize: "22px" }}>{props?.data?.selectedPlaylist.playlistName}</span>
+            <span>{savedPlaylists[audioIndex]?.title}</span>
           </div>
         </div>
       </div>
       <div>
-        <audio id="audio-player" src={props?.data?.savedPlaylists[audioIndex]?.playlink} controls autoPlay={playing} />
+        <audio id="audio-player" src={savedPlaylists[audioIndex]?.playlink} controls autoPlay={playing} />
         <audio id="audio-player1" autoPlay={campainPlaying} />
       </div>
 

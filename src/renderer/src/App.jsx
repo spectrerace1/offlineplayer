@@ -45,17 +45,17 @@ function App() {
      
     };
   }, [updateMessage]);
-  console.log(updateMessage);
+  
 
   const handleUpdate = () => {
     window.electron.ipcRenderer.send('start-update');
     setIsModalOpen(false);
   };
-
+ 
   return (
     <>
       {isLoggin ? <Playlist data={user} /> : <Home />}
-       {updateMessage && (
+       {updateMessage==="Güncelleme mevcut." && (
         <div className="modal" style={{ display: isModalOpen ? 'block' : 'none' }}>
           <div className="modal-content">
             <span className="close" onClick={() => setIsModalOpen(false)}>&times;</span>

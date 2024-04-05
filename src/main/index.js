@@ -72,7 +72,7 @@ app.whenReady().then(() => {
 
 
   autoUpdater.on('update-available', () => {
-    mainWindow.webContents.send('update-message-reply', 'Güncelleme mevcut. ');
+    mainWindow.webContents.send('update-message-reply', 'Güncelleme mevcut.');
   });
 
   autoUpdater.on('update-not-available', () => {
@@ -82,13 +82,10 @@ app.whenReady().then(() => {
 
   autoUpdater.on('update-downloaded', () => {
     mainWindow.webContents.send('update-message-reply', 'Güncelleme indirildi. Uygulama yeniden başlatılıyor...');
-    dialog.showMessageBox(mainWindow, {
-      type: 'info',
-      message: 'Yeni bir güncelleme mevcut. Uygulamayı yeniden başlatmak için "Tamam" tuşuna basın.',
-      buttons: ['Tamam']
-    }).then(() => {
+   
+  
       autoUpdater.quitAndInstall();
-    });
+   
   });
 
   autoUpdater.on('error', (error) => {
