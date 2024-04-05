@@ -10,8 +10,8 @@ function Playlist(props) {
 
     const [selectedPlaylist, setSelectedPlaylist] = useState([]);
     const [click,setClick]=useState(0)
-const user=props?.data?.user
-  
+const user=props?.data?.user?.user
+ console.log(props)
     const handlePlaylistClick = (playlist) => {
         setSelectedPlaylist(playlist);
         setClick(prevClick => prevClick + 1);
@@ -37,7 +37,7 @@ const user=props?.data?.user
 
 
     
-console.log(click)
+
 
 
     return (
@@ -46,8 +46,8 @@ console.log(click)
                 <nav class="navbar">
                     <div class="navbar-content">
                         <div class="navbar-logo">
-                            <img src={props?.data.user?.artwork_url} alt="Logo" />
-                            <span>{props?.data?.user?.name}</span>
+                            <img src={props?.data.user?.user?.artwork_url} alt="Logo" />
+                            <span>{props?.data?.user?.user?.name}</span>
                         </div>
                         {/* <div style={{ display: "flex", flexDirection: "column" }} className="navbar-info">
                             <span>Lisans Bitiş Süresi</span>

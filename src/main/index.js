@@ -123,7 +123,7 @@ ipcMain.on("log-out", (event, data) => {
 ipcMain.on("get-user", async (event) => {
   const user = store.get("userinfo");
   if (user) {
- 
+   
   // const genres = await getAllMoodsAndGenre()
     const allPlaylists = await getAllSongsInPlaylists(user);
     event.reply("get-user-reply", { allPlaylists, user });
@@ -134,7 +134,7 @@ ipcMain.on("get-user", async (event) => {
 
 async function getAllSongsInPlaylists(user) {
   try {
-    const response = await axios.get(`https://app.cloudmedia.com.tr/api/playlista/${String(user?.id)}`);
+    const response = await axios.get(`https://app.cloudmedia.com.tr/api/playlista/${String(user?.user?.id)}`);
     if (response.data) {
      
       const playlists = response.data.Playlist;

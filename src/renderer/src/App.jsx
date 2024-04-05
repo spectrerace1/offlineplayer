@@ -58,12 +58,12 @@ function App() {
   return (
     <>
       {isLoggin ? <Playlist data={user} /> : <Home />}
-       {updateMessage==="Güncelleme mevcut." && (
+       { (
         <div className="modal" style={{ display: isModalOpen ? 'block' : 'none' }}>
           <div className="modal-content">
             <span className="close" onClick={() => setIsModalOpen(false)}>&times;</span>
             <p>{updateMessage}</p>
-            <button onClick={handleUpdate}>Güncellemeyi Başlat</button>
+            <button className='btn' onClick={handleUpdate}>Güncellemeyi Başlat</button>
           </div>
         </div>
       )} 
