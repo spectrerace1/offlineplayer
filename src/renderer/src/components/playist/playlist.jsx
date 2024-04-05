@@ -7,7 +7,7 @@ import axios from "axios";
 import _ from "lodash";
 function Playlist(props) {
 
-let counter=0;
+
     const [selectedPlaylist, setSelectedPlaylist] = useState([]);
     const [click,setClick]=useState(0)
 const user=props?.data?.user
@@ -68,7 +68,7 @@ console.log(click)
                 </div>
             </div>
             <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 99999 }}>
-                <Player data={{selectedPlaylist,user}}/>  
+                <Player data={{selectedPlaylist,user,click}}/>  
             </div>
         </>
     );

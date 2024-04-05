@@ -6,6 +6,7 @@ import './player.css';
 import axios from 'axios';
 
 const AudioPlayer = (props) => {
+  console.log()
 
   const [audioIndex, setAudioIndex] = useState(0); // Şu an çalınan şarkının indeksi
   const [playing, setPlaying] = useState(false); // Çalma durumu
@@ -429,7 +430,7 @@ useEffect(() => {
         }
       }
     }
-  }, [audioIndex, props?.data?.selectedPlaylist]);
+  }, [audioIndex, props?.data?.click]);
   
 
   // Bir sonraki şarkıya geç
@@ -487,6 +488,16 @@ setAudioIndex(0);
       
     
   }, []);
+  useEffect(() => {
+    const audioUrl = savedPlaylists[audioIndex]?.playlink;
+    if (audioUrl) {
+      const audioElement = document.getElementById('audio-player');
+      audioElement.src = audioUrl;
+      audioElement.load();
+    }
+  }, [
+    
+  ]);
 
   useEffect(() => {
      ezanDurumuKontrol()
