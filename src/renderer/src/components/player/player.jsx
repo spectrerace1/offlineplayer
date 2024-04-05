@@ -487,7 +487,7 @@ setAudioIndex(0);
       playAudio()
       
     
-  }, []);
+  }, [props?.data?.savedPlaylists]);
   useEffect(() => {
     const audioUrl = savedPlaylists[audioIndex]?.playlink;
     if (audioUrl) {
