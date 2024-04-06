@@ -1,6 +1,6 @@
 {
   "name": "cloud-media",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Cloudmedia desktop application",
   "main": "./out/main/index.js",
   "author": "Cloud Media",

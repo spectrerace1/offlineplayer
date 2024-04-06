@@ -26,7 +26,7 @@ const AudioPlayer = (props) => {
     type1: [],
     type2: []
 });
-const [campainClone, setCampainClone] = useState(groupedCampaigns.type0)
+const [campainClone, setCampainClone] = useState(groupedCampaigns?.type0)
 async function getCampaigns() {
     const camApi = "https://app.cloudmedia.com.tr/api/comapi/";
     const userId = props?.data?.user?.id
@@ -350,22 +350,46 @@ useEffect(() => {
   // useEffect kancası sona erdiğinde interval'i temizle
   return () => clearInterval(interval);
 }, []);
-
+const turkishToEnglishDays = {
+  'Paz': 'Sun',
+  'Pzt': 'Mon',
+  'Sal': 'Tue',
+  'Çar': 'Wed',
+  'Per': 'Thu',
+  'Cum': 'Fri',
+  'Cmt': 'Sat'
+};
   useEffect(() => {
-
+if(groupedCampaigns?.type0?.length>0){
+  setCampainClone(groupedCampaigns?.type0)
+}
+function turkishToEnglishDay(turkishDay) {
+  return turkishToEnglishDays[turkishDay] || turkishDay; // Eğer eşleşme yoksa orijinal değeri döndür
+}
 
     const intervalId = setInterval(() => {
 
       const currentHour = new Date().getHours();
       const currentMinute = new Date().getMinutes();
       const currentSecond = new Date().getSeconds();
-      const today = new Date();
       const options = { weekday: 'short' };
-      const day = today.toLocaleDateString('eu-US', options);
+      const today = new Date();
+      const dayFormatter = new Intl.DateTimeFormat('eu-US', options);
+      const day = dayFormatter.format(today);
+      
+       let newday= turkishToEnglishDay(day)
+     
+      
+      
+
+    
+    
 
       const matchedCampaign = campainClone?.find(campaign => {
-        const [campaignHour, campaignMinute] = campaign.CompanyValue.split(':');
-        return parseInt(campaignHour) === currentHour && parseInt(campaignMinute) === currentMinute && campaign[day] === 1;
+      
+        const [campaignHour, campaignMinute] = campaign?.CompanyValue.split(':');
+       
+        return parseInt(campaignHour) === currentHour && parseInt(campaignMinute) === currentMinute && campaign[newday] === 1;
       });
 
       if (matchedCampaign !== undefined) {
@@ -385,7 +409,7 @@ useEffect(() => {
 
 
 
-  }, [audioIndex, props?.data?.groupedCampaigns]);
+  }, [audioIndex, groupedCampaigns?.type0]);
 
 
   const campainAudioPlay = (audioUrl) => {
