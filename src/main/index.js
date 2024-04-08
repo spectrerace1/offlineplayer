@@ -7,7 +7,7 @@ const Store = require('electron-store');
 const axios = require('axios');
 const { autoUpdater } = require("electron-updater");
 const store = new Store();
-
+const AutoLaunch = require('auto-launch');
 autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = true;
 
@@ -65,7 +65,9 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
-
+  app.setLoginItemSettings({
+    openAtLogin:true
+  })
   autoUpdater.checkForUpdates();
 
   // Güncelleme olaylarını dinleme
@@ -107,6 +109,7 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
 
 ipcMain.on("login-info", (event, data) => {
   if (data) {
