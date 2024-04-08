@@ -63,7 +63,7 @@ function App() {
           <div className="modal-content">
             <span className="close" onClick={() => setIsModalOpen(false)}>&times;</span>
             <p>{updateMessage}</p>
-            <button className='btn' onClick={handleUpdate}>Güncellemeyi Başlat</button>
+          { updateMessage==="Güncelleme indiriliyor."?null:<button className='btn' onClick={handleUpdate}>Güncellemeyi Başlat</button>}
           </div>
         </div>
       )} 
