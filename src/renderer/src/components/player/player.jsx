@@ -1,202 +1,206 @@
-import React, { useState, useEffect,useRef } from 'react';
-import { PiPauseCircleLight } from "react-icons/pi";
-import { PiPlayCircleLight } from "react-icons/pi";
-import _ from "lodash"
+import React, { useState, useEffect, useRef } from 'react';
+import { PiPauseCircleLight, PiPlayCircleLight } from "react-icons/pi";
+import _ from "lodash";
 import './player.css';
 import axios from 'axios';
 
 const AudioPlayer = (props) => {
-  console.log()
-
-  const [audioIndex, setAudioIndex] = useState(0); // Şu an çalınan şarkının indeksi
-  const [playing, setPlaying] = useState(false); // Çalma durumu
+  const [audioIndex, setAudioIndex] = useState(0);
+  const [playing, setPlaying] = useState(false);
   const [campainPlaying, setCampainPlaying] = useState(false);
-
   const [showModal, setShowModal] = useState(false);
-  const [playerlistLengt, setPlayerlistLenght] = useState(0)
-
+  const [playerlistLengt, setPlayerlistLenght] = useState(0);
   const [savedPlaylists, setSavedPlaylists] = useState([]);
   const [clonePlaylist, setClonePlaylist] = useState([]);
   const [campainArray, setCampaignArray] = useState([]);
   const [campainArray1, setCampaignArray1] = useState([]);
-  const [newArray, setNewArray] = useState([]); // Şarkı dizisi
+  const [newArray, setNewArray] = useState([]);
   const previousType2Ref = useRef(null);
   const [groupedCampaigns, setGroupedCampaigns] = useState({
     type0: [],
     type1: [],
     type2: []
-});
-const [campainClone, setCampainClone] = useState(groupedCampaigns?.type0)
-async function getCampaigns() {
+  });
+  const [campainClone, setCampainClone] = useState(groupedCampaigns?.type0);
+
+
+  async function getCampaigns() {
     const camApi = "https://app.cloudmedia.com.tr/api/comapi/";
-    const userId = props?.data?.user?.id
+    const userId = props?.data?.user?.id;
     await axios.get(`${camApi}${userId}`).then(res => {
+      const campaigns = res.data;
+      const newGroupedCampaigns = {
+        type0: [],
+        type1: [],
+        type2: []
+      };
 
-        const campaigns = res.data;
-
-        const newGroupedCampaigns = {
-            type0: [],
-            type1: [],
-            type2: []
-        };
-
-       if(campaigns&&campaigns.data!==null){
+      if (campaigns && campaigns.data !== null) {
         campaigns?.forEach(campaign => {
-            newGroupedCampaigns['type' + campaign.CompanyType].push(campaign);
+          newGroupedCampaigns['type' + campaign.CompanyType].push(campaign);
         });
-       } 
+      }
 
-        setGroupedCampaigns(newGroupedCampaigns);
-
+      setGroupedCampaigns(newGroupedCampaigns);
     }).catch(error => {
-        console.error('Error fetching campaigns:', error);
+      console.error('Error fetching campaigns:', error);
     });
-}
+  }
 
-function shufflePlaylist() {
-    let shuffledArray = []; // Yeni bir dizi oluştur
+  function shufflePlaylist() {
+    let shuffledArray = [];
     if (Object.values(props?.data?.selectedPlaylist).length > 0 && props?.data?.selectedPlaylist.songs[0].song) {
+      const songs = props?.data?.selectedPlaylist?.songs[0]?.song;
 
-        const songs = props?.data?.selectedPlaylist?.songs[0]?.song;
-
-        songs.forEach(song => {
-            shuffledArray.push({ // Yeni diziye karıştırılmış şarkıları ekle
-                title: song.title || "",
-                genre: song.genre || "",
-                mood: song.mood || "",
-                duration: song.duration || 0,
-                artwork_url: song.artwork_url || "",
-                playlink: song.playlink || ""
-            });
+      songs.forEach(song => {
+        shuffledArray.push({
+          title: song.title || "",
+          genre: song.genre || "",
+          mood: song.mood || "",
+          duration: song.duration || 0,
+          artwork_url: song.artwork_url || "",
+          playlink: song.playlink || ""
         });
+      });
 
-        shuffledArray = _.shuffle(shuffledArray); // Tüm şarkıları karıştır
-        setNewArray(shuffledArray); // Karıştırılmış diziyi ayarla
+      shuffledArray = _.shuffle(shuffledArray);
+      setNewArray(shuffledArray);
     }
-}
-function convertCampaignsToSongs(campaigns) {
+  }
+
+  function convertCampaignsToSongs(campaigns) {
     const songs = [];
     campaigns.sort((a, b) => a.CompanyValue - b.CompanyValue);
     campaigns.forEach(campaign => {
-        const companyValue = campaign.CompanyValue;
-        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        const currentDay = days[new Date().getDay()];
+      const companyValue = campaign.CompanyValue;
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const currentDay = days[new Date().getDay()];
 
-        if (campaign[currentDay] === 1) {
-            const newSong = {
-                title: campaign.CompanyName || "",
-                genre: "", // Belirtilmemiş
-                mood: "", // Belirtilmemiş
-                duration: 0, // Belirtilmemiş
-                artwork_url: "", // Belirtilmemiş
-                playlink: campaign.path || "",
-                companyValue: campaign.CompanyValue
-            };
-            songs.push(newSong)
-        }
+      if (campaign[currentDay] === 1) {
+        const newSong = {
+          title: campaign.CompanyName || "",
+          genre: "",
+          mood: "",
+          duration: 0,
+          artwork_url: "",
+          playlink: campaign.path || "",
+          companyValue: campaign.CompanyValue
+        };
+        songs.push(newSong);
+      }
     });
 
     setCampaignArray(songs);
+  }
 
-}
-function convertCampaignsToSongs1(campaigns) {
+  function convertCampaignsToSongs1(campaigns) {
     const songs = [];
     campaigns.sort((a, b) => a.CompanyValue - b.CompanyValue);
     campaigns.forEach(campaign => {
-        const companyValue = campaign.CompanyValue;
-        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        const currentDay = days[new Date().getDay()];
+      const companyValue = campaign.CompanyValue;
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const currentDay = days[new Date().getDay()];
 
-        if (campaign[currentDay] === 1) {
-            const newSong = {
-                title: campaign.CompanyName || "",
-                genre: "", // Belirtilmemiş
-                mood: "", // Belirtilmemiş
-                duration: 0, // Belirtilmemiş
-                artwork_url: "", // Belirtilmemiş
-                playlink: campaign.path || "",
-                companyValue: campaign.CompanyValue
-            };
-            songs.push(newSong)
-        }
+      if (campaign[currentDay] === 1) {
+        const newSong = {
+          title: campaign.CompanyName || "",
+          genre: "",
+          mood: "",
+          duration: 0,
+          artwork_url: "",
+          playlink: campaign.path || "",
+          companyValue: campaign.CompanyValue
+        };
+        songs.push(newSong);
+      }
     });
 
     setCampaignArray1(songs);
+  }
+  function convertCampaignsToSongWithType1(campaigns) {
+    const songs = [];
+    campaigns.sort((a, b) => a.CompanyValue - b.CompanyValue);
+    campaigns.forEach(campaign => {
+      const companyValue = campaign.CompanyValue;
+      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const currentDay = days[new Date().getDay()];
 
-}
-function campainJoinToPlaylist() {
-  if (newArray.length > 0 && campainArray.length > 0) {
-      let joinSongArray = []
+      if (campaign[currentDay] === 1) {
+        const durationInSeconds = companyValue * 60;
+        const newSong = {
+          title: campaign.CompanyName || "",
+          genre: "",
+          mood: "",
+          duration: durationInSeconds,
+          artwork_url: "",
+          playlink: campaign.path || "",
+          companyValue: campaign.CompanyValue,
+
+        };
+        songs.push(newSong);
+      }
+    });
+    return songs;
+  }
+
+
+  function campainJoinToPlaylist() {
+    if (newArray.length > 0 && campainArray.length > 0) {
+      let joinSongArray = [];
       let joinCampainArray = _.clone(campainArray);
       let counter = 1;
 
-      // campainArray'deki her bir kampanyayı işleyelim
       _.each(newArray, (song, songIndex) => {
+        const campaing = _.find(joinCampainArray, { 'companyValue': counter });
 
-          const campaing = _.find(joinCampainArray, { 'companyValue': counter });
+        if (campaing) {
+          joinSongArray.push(song);
+          joinSongArray.push(campaing);
 
-
-          if (campaing) {
-
-              joinSongArray.push(song);
-              joinSongArray.push(campaing)
-
-              counter = 0;
-              _.remove(joinCampainArray, campaing);
-              if (joinCampainArray.length === 0) {
-                  joinCampainArray = _.clone(campainArray);
-              }
-
+          counter = 0;
+          _.remove(joinCampainArray, campaing);
+          if (joinCampainArray.length === 0) {
+            joinCampainArray = _.clone(campainArray);
           }
-          else {
-              joinSongArray.push(song)
-          }
-          counter++
+        } else {
+          joinSongArray.push(song);
+        }
+        counter++;
       });
 
-   return  joinSongArray
-
-  }
-}
-function campainJoinToPlaylist1() {
-    if (newArray.length > 0 && campainArray1.length > 0) {
-        let joinSongArray = []
-        let joinCampainArray = _.clone(campainArray1);
-        let counter = 1;
-
-        // campainArray'deki her bir kampanyayı işleyelim
-        _.each(newArray, (song, songIndex) => {
-
-            const campaing = _.find(joinCampainArray, { 'companyValue': counter });
-
-
-            if (campaing) {
-
-                joinSongArray.push(song);
-                joinSongArray.push(campaing)
-
-                counter = 0;
-                _.remove(joinCampainArray, campaing);
-                if (joinCampainArray.length === 0) {
-                    joinCampainArray = _.clone(campainArray1);
-                }
-
-            }
-            else {
-                joinSongArray.push(song)
-            }
-            counter++
-        });
-
-     return  joinSongArray
-
+      return joinSongArray;
     }
-}
+  }
 
+  function campainJoinToPlaylist1() {
+    if (newArray.length > 0 && campainArray1.length > 0) {
+      let joinSongArray = [];
+      let joinCampainArray = _.clone(campainArray1);
+      let counter = 1;
 
+      _.each(newArray, (song, songIndex) => {
+        const campaing = _.find(joinCampainArray, { 'companyValue': counter });
+
+        if (campaing) {
+          joinSongArray.push(song);
+          joinSongArray.push(campaing);
+
+          counter = 0;
+          _.remove(joinCampainArray, campaing);
+          if (joinCampainArray.length === 0) {
+            joinCampainArray = _.clone(campainArray1);
+          }
+        } else {
+          joinSongArray.push(song);
+        }
+        counter++;
+      });
+
+      return joinSongArray;
+    }
+  }
 
   async function ezanDurumuKontrol() {
-
     return new Promise(function (resolve, reject) {
       fetch("https://app.cloudmedia.com.tr/api/isezan/" + props?.data?.user.id)
         .then(response => {
@@ -206,56 +210,40 @@ function campainJoinToPlaylist1() {
           return response.json();
         })
         .then(data => {
-
-          EzanVaktiApi(data)
-
+          console.log(data);
+          EzanVaktiApi(data);
         })
         .catch(error => {
           console.error("Fetch Hatası:", error);
           reject(error);
         });
     });
-
   }
 
-
   function EzanVaktiApi(city) {
-    let socket; // Soket değişkenini dışarıda tanımlıyoruz.
+    let socket;
 
-    // WebSocket bağlantısını kurma işlemini fonksiyon içine alıyoruz.
     function connectWebSocket() {
-      // city.city değeri varsa sokete bağlan
       if (city.city != "" && city.city && city.ezan === "True") {
-
-        // WebSocket'e bağlan
         socket = new WebSocket("wss://ezansocket-v6fk.onrender.com");
 
-        // WebSocket bağlantısı açıldığında
         socket.onopen = function (event) {
-        /*   console.log("WebSocket bağlantısı açıldı.");
-          console.log(city.city); */
-          socket.send(city.city); // Şehir bilgisini mesaj olarak gönder
+          socket.send(city.city);
         };
 
-        // WebSocket üzerinden mesaj alındığında
         socket.onmessage = function (event) {
           console.log("WebSocket'ten mesaj alındı:", JSON.parse(event.data)["ezan"]);
 
           if (JSON.parse(event.data)["ezan"]["genelEzanDurumu"] === "Ezan Okunuyor" && city.ezan === "True") {
             ezanPlaying(JSON.parse(event.data)["ezan"]["dif"]);
-
           }
         };
 
-        // WebSocket bağlantısı kapandığında
         socket.onclose = function (event) {
           console.log("WebSocket bağlantısı kapatıldı.");
-
-          // 2 saniye sonra tekrar bağlanmak için setTimeout kullanıyoruz.
           setTimeout(connectWebSocket, 2000);
         };
 
-        // WebSocket bağlantısında hata olduğunda
         socket.onerror = function (error) {
           console.error("WebSocket hatası:", error);
         };
@@ -264,111 +252,88 @@ function campainJoinToPlaylist1() {
       }
     }
 
-    // Bağlantıyı başlatıyoruz.
     connectWebSocket();
   }
+
   function ezanPlaying(dif) {
-
-
-
     setShowModal(true);
-    pauseAudio()
+    pauseAudio();
     if (dif === 10) {
-    
-        setShowModal(false)
-        playAudio()
-      
+      setShowModal(false);
+      playAudio();
     }
-
   }
 
- useEffect(()=>{
+  useEffect(() => {
+    shufflePlaylist();
+    convertCampaignsToSongs(groupedCampaigns.type2);
+  }, [props?.data?.selectedPlaylist]);
 
-shufflePlaylist();
-convertCampaignsToSongs(groupedCampaigns.type2);
-
-
-  },[props?.data?.selectedPlaylist]);
   useEffect(() => {
     const interval = setInterval(() => {
-      // groupedCampaigns?.type2 değerini doğrudan alın
       const currentType2 = groupedCampaigns?.type2;
-  /*  console.log("currentType2 :>> ", currentType2); */
-      // Bir önceki groupedCampaigns?.type2 değerini doğrudan alın
       const previousType2 = previousType2Ref.current;
-     /*  console.log("previousType2 :>> ", previousType2); */
-      // Eğer bir önceki groupedCampaigns?.type2 değeri yoksa veya mevcut değer ile farklı ise
-      if ( !_.isEqual(previousType2, currentType2)) {
-        if(previousType2!==null){
-          playNext(currentType2)
-        }   // Yeni groupedCampaigns?.type2 değerini önceki değer olarak saklayın
+
+      if (!_.isEqual(previousType2, currentType2)) {
+        if (previousType2 !== null) {
+          playNext(currentType2);
+        }
         previousType2Ref.current = currentType2;
-  
-        // playNext fonksiyonunu çağırın
-       
       }
-    }, 1000 *60*5);
-  
+    }, 1000 * 60 * 5);
+
     return () => clearInterval(interval);
   }, [groupedCampaigns?.type2]);
 
-  const playNext =  async (currentType2) => {
+  const playNext = async (currentType2) => {
     shufflePlaylist();
-    await  convertCampaignsToSongs1(currentType2);
-   
-   
-    
+    await convertCampaignsToSongs1(currentType2);
   };
 
-
-  useEffect(()=>{
-    if(campainArray1?.length > 0){
+  useEffect(() => {
+    if (campainArray1?.length > 0) {
       setClonePlaylist(campainJoinToPlaylist1());
     } else {
       setClonePlaylist(newArray);
     }
+  }, [campainArray1]);
 
-  },[campainArray1])
   useEffect(() => {
-
-    if(campainArray?.length>0){
-
-        setSavedPlaylists(campainJoinToPlaylist()) 
-
+    if (campainArray?.length > 0) {
+      setSavedPlaylists(campainJoinToPlaylist());
+    } else {
+      setSavedPlaylists(newArray);
     }
-    else{
-        setSavedPlaylists(newArray);
-    }
-}, [campainArray, props?.data?.selectedPlaylist]);
+  }, [campainArray, props?.data?.selectedPlaylist]);
 
-useEffect(() => {
-  getCampaigns();
-  const interval = setInterval(() => {
+  useEffect(() => {
+    getCampaigns();
+    const interval = setInterval(() => {
       getCampaigns();
-  },1000 *60*5); // 60000 milisaniye = 1 dakika
+    }, 1000 * 60 * 5);
 
-  // useEffect kancası sona erdiğinde interval'i temizle
-  return () => clearInterval(interval);
-}, []);
-const turkishToEnglishDays = {
-  'Paz': 'Sun',
-  'Pzt': 'Mon',
-  'Sal': 'Tue',
-  'Çar': 'Wed',
-  'Per': 'Thu',
-  'Cum': 'Fri',
-  'Cmt': 'Sat'
-};
+    return () => clearInterval(interval);
+  }, []);
+
+  const turkishToEnglishDays = {
+    'Paz': 'Sun',
+    'Pzt': 'Mon',
+    'Sal': 'Tue',
+    'Çar': 'Wed',
+    'Per': 'Thu',
+    'Cum': 'Fri',
+    'Cmt': 'Sat'
+  };
+
   useEffect(() => {
-if(groupedCampaigns?.type0?.length>0){
-  setCampainClone(groupedCampaigns?.type0)
-}
-function turkishToEnglishDay(turkishDay) {
-  return turkishToEnglishDays[turkishDay] || turkishDay; // Eğer eşleşme yoksa orijinal değeri döndür
-}
+    if (groupedCampaigns?.type0?.length > 0) {
+      setCampainClone(groupedCampaigns?.type0);
+    }
+    function turkishToEnglishDay(turkishDay) {
+      return turkishToEnglishDays[turkishDay] || turkishDay;
+    }
 
     const intervalId = setInterval(() => {
-
       const currentHour = new Date().getHours();
       const currentMinute = new Date().getMinutes();
       const currentSecond = new Date().getSeconds();
@@ -376,62 +341,41 @@ function turkishToEnglishDay(turkishDay) {
       const today = new Date();
       const dayFormatter = new Intl.DateTimeFormat('eu-US', options);
       const day = dayFormatter.format(today);
-      
-       let newday= turkishToEnglishDay(day)
-     
-      
-      
-
-    
-    
+      let newday = turkishToEnglishDay(day);
 
       const matchedCampaign = campainClone?.find(campaign => {
-      
         const [campaignHour, campaignMinute] = campaign?.CompanyValue.split(':');
-       
         return parseInt(campaignHour) === currentHour && parseInt(campaignMinute) === currentMinute && campaign[newday] === 1;
       });
 
       if (matchedCampaign !== undefined) {
-
         campainAudioPlay(matchedCampaign.path);
         _.remove(campainClone, matchedCampaign);
         setCampainClone(campainClone);
-
-
       }
-
-
-    }, 6000); // Her dakika kontrol etmek için
+    }, 6000);
 
     return () => clearInterval(intervalId);
-
-
-
-
   }, [audioIndex, groupedCampaigns?.type0]);
 
-
   const campainAudioPlay = (audioUrl) => {
-    if (audioUrl) { // Check if audioUrl exists
+    if (audioUrl) {
       setCampainPlaying(true);
       const audioElement = document.getElementById('audio-player');
       const audioElement1 = document.getElementById('audio-player1');
       audioElement1.src = audioUrl;
-      audioElement.pause()
-
+      audioElement.pause();
       audioElement1.play();
-      audioElement1.addEventListener('ended', campainAudioPause)
+      audioElement1.addEventListener('ended', campainAudioPause);
     }
   };
+
   const campainAudioPause = () => {
-    // Check if audioUrl exists
     setCampainPlaying(false);
     const audioElement = document.getElementById('audio-player');
     audioElement.play();
-
-
   };
+
   useEffect(() => {
     const audioElement = document.getElementById('audio-player');
     if (playing) {
@@ -441,7 +385,6 @@ function turkishToEnglishDay(turkishDay) {
     }
   }, [playing]);
 
-  // Şarkı dizisi veya audioIndex değiştiğinde yeni şarkıyı yükle
   useEffect(() => {
     if (savedPlaylists > 0) {
       const audioUrl = savedPlaylists[audioIndex]?.playlink;
@@ -454,14 +397,9 @@ function turkishToEnglishDay(turkishDay) {
         }
       }
     }
+    convertCampaignsToSongWithType1(groupedCampaigns.type1)
   }, [audioIndex, props?.data?.click]);
-  
 
-  // Bir sonraki şarkıya geç
-
-  
-
-  // Bir önceki şarkıya geç
   const playPrevious = () => {
     if (audioIndex > 0) {
       setAudioIndex(prevIndex => prevIndex - 1);
@@ -477,41 +415,30 @@ function turkishToEnglishDay(turkishDay) {
   };
 
   useEffect(() => {
-    
-  
     const playNext = () => {
-      
       if (audioIndex < savedPlaylists?.length - 1) {
         setAudioIndex(audioIndex + 1);
         if (clonePlaylist?.length > 0 && !_.isEqual(clonePlaylist, savedPlaylists)) {
-          // playNext fonksiyonunu tetikleyin ve clonePlaylist'i çalmaya başlayın
-          
-          setSavedPlaylists(clonePlaylist)
-         
-        } 
-      
+          setSavedPlaylists(clonePlaylist);
+        }
       } else {
         setAudioIndex(0);
       }
-    
     };
-   
+
     const audioElement = document.getElementById('audio-player');
     audioElement.addEventListener('ended', playNext);
 
     return () => {
       audioElement.removeEventListener('ended', playNext);
     };
-  }, [audioIndex,savedPlaylists]);
+  }, [audioIndex, savedPlaylists]);
 
   useEffect(() => {
-    
-setAudioIndex(0);
-   
-      playAudio()
-      
-    
+    setAudioIndex(0);
+    playAudio();
   }, [props?.data?.savedPlaylists]);
+
   useEffect(() => {
     const audioUrl = savedPlaylists[audioIndex]?.playlink;
     if (audioUrl) {
@@ -519,12 +446,85 @@ setAudioIndex(0);
       audioElement.src = audioUrl;
       audioElement.load();
     }
-  }, [props.data.click ]);
+  }, [props.data.click]);
 
   useEffect(() => {
-     ezanDurumuKontrol()
-  }, [])
- 
+    ezanDurumuKontrol();
+  }, []);
+
+  let TimeCounter = useRef(0);
+  let MinuteCounter = useRef(0);
+  let toPlaylist = useRef([]);
+
+  const checkCampaignPlay = () => {
+    const campaignSongs = convertCampaignsToSongWithType1(groupedCampaigns.type1);
+    console.log(TimeCounter.current, campaignSongs);
+    const audioElement = document.getElementById('audio-player');
+    TimeCounter.current++;
+
+    if (TimeCounter.current % 60 === 0) {
+      try {
+   
+        MinuteCounter.current++;
+
+        campaignSongs.forEach((item) => {
+        
+          if ( MinuteCounter.current%parseInt(item?.companyValue) ===0) {
+       
+            toPlaylist.current.push(item);
+          }
+        });
+
+     
+        if (toPlaylist.current.length > 0) {
+          audioElement.addEventListener("ended", playCampaignSong);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const playCampaignSong = () => {
+    if (toPlaylist.current.length === 0) return;
+
+  
+    setPlaying(false);
+    const audioElement = document.getElementById('audio-player');
+    audioElement.pause();
+
+    if (toPlaylist.current.length > 1) {
+      toPlaylist.current = [toPlaylist.current[toPlaylist.current.length - 1]];
+    }
+
+    const audioElement1 = document.getElementById('audio-player1');
+    for (const item of toPlaylist.current) {
+      audioElement1.src = item.playlink;
+    }
+
+    audioElement1.play();
+    audioElement1.addEventListener('ended', () => {
+      setPlaying(true);
+      audioElement.play();
+      toPlaylist.current = [];
+      audioElement1.removeEventListener('ended', playCampaignSong);
+    });
+  };
+
+  useEffect(() => {
+    const campaignSongs = convertCampaignsToSongWithType1(groupedCampaigns.type1);
+    let interval;
+    if (campaignSongs.length > 0&&savedPlaylists.length>0) {
+      interval = setInterval(() => {
+        checkCampaignPlay();
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [groupedCampaigns.type1,savedPlaylists]);
+  
+  
+  
   return (
     <>
       <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} className="audio-player">
@@ -536,7 +536,7 @@ setAudioIndex(0);
           )}
         </div>
         <div className='song-info'>
-          <img src={savedPlaylists[audioIndex]?.artwork_url} alt="" srcset="" />
+          <img src={savedPlaylists[audioIndex]?.artwork_url} alt="" />
           <div className='text-container'>
             <span style={{ fontSize: "22px" }}>{props?.data?.selectedPlaylist.playlistName}</span>
             <span>{savedPlaylists[audioIndex]?.title}</span>
@@ -547,13 +547,10 @@ setAudioIndex(0);
         <audio id="audio-player" src={savedPlaylists[audioIndex]?.playlink} controls autoPlay={playing} />
         <audio id="audio-player1" autoPlay={campainPlaying} />
       </div>
-
       <div className="modal-container">
-
         {showModal && (
           <div className="modal">
             <div className="modal-content">
-
               <p>Ezan vakti. Müzik durduruldu.</p>
             </div>
           </div>
