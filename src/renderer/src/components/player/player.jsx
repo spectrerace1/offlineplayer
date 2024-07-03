@@ -23,7 +23,8 @@ const AudioPlayer = (props) => {
   });
   const [campainClone, setCampainClone] = useState(groupedCampaigns?.type0);
 
-
+  const audioRef1 = useRef(null);  // 1. player için ref
+  const audioRef2 = useRef(null);  // 2. player için ref
   async function getCampaigns() {
     const camApi = "https://app.cloudmedia.com.tr/api/comapi/";
     const userId = props?.data?.user?.id;
@@ -524,7 +525,23 @@ const AudioPlayer = (props) => {
   }, [groupedCampaigns.type1,savedPlaylists]);
   
   
-  
+  const syncVolume = () => {
+    if (audioRef1.current && audioRef2.current) {
+      audioRef2.current.volume = audioRef1.current.volume;
+    }
+  };
+  useEffect(() => {
+    const audioElement1 = audioRef1.current;
+    if (audioElement1) {
+      audioElement1.addEventListener('volumechange', syncVolume);
+    }
+
+    return () => {
+      if (audioElement1) {
+        audioElement1.removeEventListener('volumechange', syncVolume);
+      }
+    };
+  }, []);
   return (
     <>
       <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} className="audio-player">
@@ -544,8 +561,8 @@ const AudioPlayer = (props) => {
         </div>
       </div>
       <div>
-        <audio id="audio-player" src={savedPlaylists[audioIndex]?.playlink} controls autoPlay={playing} />
-        <audio id="audio-player1" autoPlay={campainPlaying} />
+        <audio id="audio-player" ref={audioRef1} src={savedPlaylists[audioIndex]?.playlink} controls autoPlay={playing} />
+        <audio id="audio-player1" ref={audioRef2} autoPlay={campainPlaying} />
       </div>
       <div className="modal-container">
         {showModal && (
