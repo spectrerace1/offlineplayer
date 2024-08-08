@@ -1,6 +1,6 @@
 import react, { useState } from "react"
 import "./home.css"
-import logo from "../../assets/loginPageBanner.png"
+import logo from "../../assets/wpare.png"
 import logo1 from "../../assets/icon.png"
 import axios from "axios"
 
@@ -47,16 +47,18 @@ async function login() {
             </div>
             <div className="home-login">
                 <div><img src={logo1} alt="" srcset="" /></div>
-                <div>
-                   <div>
-                   <label> E-posta</label>
+
+                <div style={{width:"317px",top:"136px"}}>
+                   <div style={{width:"317px"}}>
+                   <label className="hos"> Hoş Geldiniz</label>
+                   <label className="hos1" style={{marginTop:"20px"}}> E-posta</label>
                     <input type="text" onChange={(e)=>setMail(e.target.value)} />
                    </div>
-                   <div>
-                   <label> Şifre</label>
+                   <div style={{width:"317px",marginTop:"20px"}}>
+                   <label  className="hos1"> Şifre</label>
                     <input type="password" onChange={(e)=>setPasword(e.target.value)}   />
                    </div>
-                   <div>
+                   <div style={{display:"flex",justifyContent:"center",marginTop:"10px"}}>
                   <button type="button" onClick={login}>Giriş Yap</button>  
                 
                    </div>

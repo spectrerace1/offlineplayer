@@ -3,6 +3,10 @@ import { PiPauseCircleLight, PiPlayCircleLight } from "react-icons/pi";
 import _ from "lodash";
 import './player.css';
 import axios from 'axios';
+import play from "./play.png"
+import pause from "./pause.png"
+import volume from "./volume.png"
+
 
 const AudioPlayer = (props) => {
   const [audioIndex, setAudioIndex] = useState(0);
@@ -22,9 +26,12 @@ const AudioPlayer = (props) => {
     type2: []
   });
   const [campainClone, setCampainClone] = useState(groupedCampaigns?.type0);
+  const [volumeLevel, setVolumeLevel] = useState(1);
+  const [showVolumeControl, setShowVolumeControl] = useState(false);
 
   const audioRef1 = useRef(null);  // 1. player için ref
   const audioRef2 = useRef(null);  // 2. player için ref
+
   async function getCampaigns() {
     const camApi = "https://app.cloudmedia.com.tr/api/comapi/";
     const userId = props?.data?.user?.id;
@@ -118,6 +125,7 @@ const AudioPlayer = (props) => {
 
     setCampaignArray1(songs);
   }
+
   function convertCampaignsToSongWithType1(campaigns) {
     const songs = [];
     campaigns.sort((a, b) => a.CompanyValue - b.CompanyValue);
@@ -136,14 +144,12 @@ const AudioPlayer = (props) => {
           artwork_url: "",
           playlink: campaign.path || "",
           companyValue: campaign.CompanyValue,
-
         };
         songs.push(newSong);
       }
     });
     return songs;
   }
-
 
   function campainJoinToPlaylist() {
     if (newArray.length > 0 && campainArray.length > 0) {
@@ -465,18 +471,14 @@ const AudioPlayer = (props) => {
 
     if (TimeCounter.current % 60 === 0) {
       try {
-   
         MinuteCounter.current++;
 
         campaignSongs.forEach((item) => {
-        
-          if ( MinuteCounter.current%parseInt(item?.companyValue) ===0) {
-       
+          if (MinuteCounter.current % parseInt(item?.companyValue) === 0) {
             toPlaylist.current.push(item);
           }
         });
 
-     
         if (toPlaylist.current.length > 0) {
           audioElement.addEventListener("ended", playCampaignSong);
         }
@@ -489,7 +491,6 @@ const AudioPlayer = (props) => {
   const playCampaignSong = () => {
     if (toPlaylist.current.length === 0) return;
 
-  
     setPlaying(false);
     const audioElement = document.getElementById('audio-player');
     audioElement.pause();
@@ -515,60 +516,73 @@ const AudioPlayer = (props) => {
   useEffect(() => {
     const campaignSongs = convertCampaignsToSongWithType1(groupedCampaigns.type1);
     let interval;
-    if (campaignSongs.length > 0&&savedPlaylists.length>0) {
+    if (campaignSongs.length > 0 && savedPlaylists.length > 0) {
       interval = setInterval(() => {
         checkCampaignPlay();
       }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [groupedCampaigns.type1,savedPlaylists]);
-  
-  
+  }, [groupedCampaigns.type1, savedPlaylists]);
+
   const syncVolume = () => {
     if (audioRef1.current && audioRef2.current) {
-      audioRef2.current.volume = audioRef1.current.volume;
+      audioRef1.current.volume = volumeLevel;
+      audioRef2.current.volume = volumeLevel;
     }
   };
-  useEffect(() => {
-    const audioElement1 = audioRef1.current;
-    if (audioElement1) {
-      audioElement1.addEventListener('volumechange', syncVolume);
-    }
 
-    return () => {
-      if (audioElement1) {
-        audioElement1.removeEventListener('volumechange', syncVolume);
-      }
-    };
-  }, []);
+  const handleVolumeChange = (e) => {
+    const newVolumeLevel = parseFloat(e.target.value);
+    setVolumeLevel(newVolumeLevel);
+    syncVolume();
+  };
+
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} className="audio-player">
+      <div style={{ display: "flex", flexDirection: "row", }} className="audio-player">
         <div className="audio-controls">
           {playing ? (
-            <button onClick={pauseAudio}><PiPauseCircleLight style={{ width: "100px", height: "100px" }} fill='black' /></button>
+            <img src={pause} alt="" onClick={pauseAudio} />
           ) : (
-            <button onClick={playAudio}><PiPlayCircleLight style={{ width: "100px", height: "100px" }} fill='black' /></button>
+            <img src={play} alt="" onClick={playAudio} />
           )}
         </div>
         <div className='song-info'>
           <img src={savedPlaylists[audioIndex]?.artwork_url} alt="" />
           <div className='text-container'>
-            <span style={{ fontSize: "22px" }}>{props?.data?.selectedPlaylist.playlistName}</span>
-            <span>{savedPlaylists[audioIndex]?.title}</span>
+            <span className='playlist-text' >{props?.data?.selectedPlaylist.playlistName}</span>
+           {/*  <span className='artist-text'>{savedPlaylists[audioIndex]?.title}</span> */}
+            <span className='song-text'>{savedPlaylists[audioIndex]?.title}</span>
           </div>
+        </div>
+        <div className='icon-container'>
+         
+            <img src={volume} alt="" onClick={() => setShowVolumeControl(true)} />
+            <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={volumeLevel}
+                onChange={handleVolumeChange}
+                className="volume-slider"
+             
+              />
+        
+        
         </div>
       </div>
       <div>
-        <audio id="audio-player" ref={audioRef1} src={savedPlaylists[audioIndex]?.playlink} controls autoPlay={playing} />
+        <audio id="audio-player" ref={audioRef1} src={savedPlaylists[audioIndex]?.playlink} autoPlay={playing} />
         <audio id="audio-player1" ref={audioRef2} autoPlay={campainPlaying} />
       </div>
       <div className="modal-container">
         {showModal && (
           <div className="modal">
             <div className="modal-content">
-              <p>Ezan vakti. Müzik durduruldu.</p>
+              <p>Ezan vakti. <br /> Yayın kısa süre sonra devam edecek </p>
+       
             </div>
           </div>
         )}
