@@ -20,6 +20,11 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 960,
     height: 670,
+    minWidth: 960,
+    minHeight: 670,
+    maxWidth: 960,
+    maxHeight: 670,
+    resizable: false, // Kullanıcının pencereyi yeniden boyutlandırmasını engeller
     show: false,
     autoHideMenuBar: true,
     icon: join(__dirname, '../../src/renderer/src/assets/icon.ico'),
