@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Home from './components/home/home';
 import Playlist from './components/playist/playlist';
+import axios from 'axios';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -25,10 +26,16 @@ function App() {
       window.electron.ipcRenderer.removeAllListeners('get-user-reply');
     };
   }, []);
+  function checkStatus(){
+    axios.post(`https://app.cloudmedia.com.tr/api/updateUserStatusApi/${user.id}/online`).then(res=>{
+      console.log(res)
+    })
+  }
 
   useEffect(() => {
     if (user) {
       setIsLoggin(true);
+      checkStatus()
     }
   }, [user]);
 

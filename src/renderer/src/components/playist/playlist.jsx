@@ -12,7 +12,7 @@ function Playlist(props) {
     const [filteredPlaylists, setFilteredPlaylists] = useState([]); // Filtrelenmiş playlistler için state
     const user = props?.data?.user?.user;
     const [showLogout, setShowLogOut] = useState(false);
-
+    console.log(user)
     useEffect(() => {
         // Arama terimi değiştikçe playlistleri filtrele
         const results = props?.data?.allPlaylists?.filter(playlist =>
@@ -29,10 +29,24 @@ function Playlist(props) {
     const logOut = () => {
         setShowLogOut(true);
     };
+    async function checkStatus() {
+        const res = await axios.post(`https://app.cloudmedia.com.tr/api/updateUserStatusApi/${user.id}/offline`).then(res => {
+            return res
+        })
+
+        return res
+    }
 
     const logOut2 = () => {
-        window.electron.ipcRenderer.send("log-out", "log-out");
-        window.location.reload();
+        checkStatus().then(res => {
+            if (res.data.status === "success") {
+                window.electron.ipcRenderer.send("log-out", "log-out");
+
+
+                window.location.reload();
+            }
+        })
+
     };
 
     return (
@@ -72,7 +86,7 @@ function Playlist(props) {
                             <span>{res.playlistName}</span>
                         </div>
                     ))}
-                   {/*  {searchTerm && filteredPlaylists.length === 0 && (
+                    {/*  {searchTerm && filteredPlaylists.length === 0 && (
                         <div className="no-results" style={{ padding: "10px" }}>Sonuç bulunamadı</div>
                     )} */}
                 </div>
